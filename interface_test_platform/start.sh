@@ -7,13 +7,11 @@ if [-z $res];then
 # 如果为空直接拷贝部署文件到部署目录
 cp -r $jenkins_dir/* $base_dir/
 echo pwd
-cd $base_dir/
-nohup python3 manage.py runserver 0.0.0.0:8000 > /dev/null   2>&1 &
 else
 # 不为空先清理部署目录再拷贝部署
 rm -rf $base_dir/*
 cp -r $jenkins_dir/* $base_dir/
 echo pwd
-cd $base_dir/
 fi
+cd $base_dir/
 nohup python3 manage.py runserver 0.0.0.0:8000 > /dev/null   2>&1 &
