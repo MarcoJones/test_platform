@@ -8,7 +8,7 @@ if [-z $res];then
 cp -r $jenkins_dir/* $base_dir/
 echo pwd
 cd $base_dir/
-python3 manage.py runserver
+nohup python3 manage.py runserver 0.0.0.0:8000 > /dev/null   2>&1 &
 else
 # 不为空先清理部署目录再拷贝部署
 rm -rf $base_dir/*
@@ -16,4 +16,4 @@ cp -r $jenkins_dir/* $base_dir/
 echo pwd
 cd $base_dir/
 fi
-nohup python manage.py runserver 0.0.0.0:8000 > /dev/null   2>&1 &
+nohup python3 manage.py runserver 0.0.0.0:8000 > /dev/null   2>&1 &
