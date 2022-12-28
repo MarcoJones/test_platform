@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}管理测试集合{% endblock %}
+{% block title %}查看/删除测试用例{% endblock %}
 {% block content %}
 
 <script type="text/javascript">
@@ -22,28 +22,29 @@
     }
 
     function isChecked(){
-        var allCheck = document.getElementsByName("testcase_list");
+        var allCheck = document.getElementsByName("test_case_list");
         for (var i = 0; i < allCheck.length; i++){
             if (allCheck[i].checked == true){
-                alert("添加用例至用例集合【{{ case_suite.suite_desc }}】成功！");
+                alert("所选用例删除成功！");
                 return true
             }
         }
-        alert("请选择要添加的测试用例！");
+        alert("请选择要删除的测试用例！");
         return false
     }
 
 
 </script>
 
+    <div><p style="margin-left: 5px;">测试集合名称：<b>{{ case_suite.suite_desc }}</b></p></div>
 <form action="" method="POST">
     {% csrf_token %}
-    <input type="submit" id="all_check1" value="添加测试用例" onclick="return isChecked()" />
+    <input style="margin-left: 5px;" type="submit" id="all_check1" value="删除测试用例" onclick="return isChecked()" />
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
             <tr>
-                <th><input type="checkbox" id="all_check" onclick="checkOrCancelAll();"/>ID</th>
+                <th><input type="checkbox" id="all_check" onclick="checkOrCancelAll();"/>用例ID</th>
                 <th>用例名称</th>
                 <th>所属项目</th>
                 <th>所属模块</th>
@@ -55,12 +56,13 @@
             </thead>
             <tbody>
 
-            {% for test_case in test_case %}
+            {% for test_case in test_cases %}
             <tr>
-                <td><input type="checkbox" value="{{ test_case.id }}" name="testcase_list"/>{{ test_case.id }}</td>
-                <td><a href="{% url 'test_case_detail' test_case.id %}">{{ test_case.case_name }}</a></td>
-                <td>{{ test_case.belong_project.name }}</td>
-                <td>{{ test_case.belong_module.name }}</td>
+                <td><input type="checkbox" value="{{ test_case.test_case.id }}" name="test_case_list"/></td>
+                <td>{{ test_case.test_case.id }}</td>
+                <td><a href="{% url 'test_case_detail' test_case.test_case.id %}">{{ test_case.test_case.case_name }}</a></td>
+                <td>{{ test_case.test_case.belong_project.name }}</td>
+                <td>{{ test_case.test_case.belong_module.name }}</td>
                 <td>{{ test_case.test_case.creator }}</td>
                 <td>{{ case_suite.test_case.create_time|date:"Y-n-d H:i" }}</td>
                 <td>{{ case_suite.test_case.update_time|date:"Y-n-d H:i" }}</td>
@@ -78,15 +80,15 @@
     <nav>
         <ul class="pagination">
             <li class="step-links">
-                {% if case_suites.has_previous %}
-                <a class='active' href="?page={{ case_suites.previous_page_number }}">上一页</a>
+                {% if test_cases.has_previous %}
+                <a class='active' href="?page={{ test_cases.previous_page_number }}">上一页</a>
                 {% endif %}
 
                 <span class="current">
-                    第 {{ case_suites.number }} 页/共 {{ case_suites.paginator.num_pages }} 页</span>
+                    第 {{ test_cases.number }} 页/共 {{ test_cases.paginator.num_pages }} 页</span>
 
-                {% if case_suites.has_next %}
-                <a class='active' href="?page={{ case_suites.next_page_number }}">下一页</a>
+                {% if test_cases.has_next %}
+                <a class='active' href="?page={{ test_cases.next_page_number }}">下一页</a>
                 {% endif %}
             </li>
         </ul>

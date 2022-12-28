@@ -82,7 +82,7 @@ DATABASES = {
         'NAME': 'interface_platform',
         'USER': 'root',
         'PASSWORD': '123456',
-        'HOST': '192.168.10.153',
+        'HOST': 'localhost',
         'PORT': '3306'
     }
 }

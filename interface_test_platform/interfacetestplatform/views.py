@@ -183,9 +183,9 @@ def add_case_in_suite(request, suite_id):
     #查询指定的用例集合
     case_suite = CaseSuite.objects.get(id = suite_id)
     #根据用例ID查询所有用例
-    test_case = TestCase.objects.filter().order_by('id')
+    test_cases = TestCase.objects.filter().order_by('id')
     if request.method == 'GET':
-        print("test_case:", test_case)
+        print("test_case:", test_cases)
 
     elif request.method == 'POST':
         test_cases_list = request.POST.getlist('testcase_list')
@@ -197,5 +197,34 @@ def add_case_in_suite(request, suite_id):
         else:
             print("添加用例失败！")
             return HttpResponse("添加的测试用例为空，请勾选用例后再添加！")
-        return render(request, 'add_case_in_suite.html', {'test_case': get_paginator(request, test_case),
+    return render(request, 'add_case_in_suite.html', {'test_case': get_paginator(request, test_cases),
                                                           'case_suite': case_suite})
+
+@login_required
+def show_and_delete_case_in_suite(request, suite_id):
+    """
+    用例集合页--查看/删除用例
+    :param request:
+    :param suite_id:集合ID
+    :return:
+    """
+    case_suite = CaseSuite.objects.get(id=suite_id)
+    test_cases = SuiteCase.objects.filter(case_suite=case_suite)
+    if request.method == "POST":
+        test_cases_list = request.POST.getlist('test_case_list')
+        if test_cases_list:
+            print("勾选用例：", test_cases_list)
+            for test_case in  test_cases_list:
+                test_case = TestCase.objects.get(id = int(test_case))
+                SuiteCase.objects.filter(case_suite=case_suite, test_case=test_case).first().delete()
+
+        else:
+            print("删除测试用例失败！")
+            return HttpResponse("所选测试用例为空，请选择后再进行删除！")
+
+    case_suite = CaseSuite.objects.get(id=suite_id)
+    return render(request, 'show_and_delete_case_in_suite.html',
+                  {'test_cases': get_paginator(request, test_cases), 'case_suite': case_suite})
+
+
+
